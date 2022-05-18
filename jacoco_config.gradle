@@ -3,8 +3,12 @@ apply plugin: 'jacoco'
 android {
     defaultPublishConfig "debug"
     buildTypes {
+        release {
+            /** 打开 release 覆盖率统计开关 **/
+            testCoverageEnabled = true
+        }
         debug {
-            /**打开覆盖率统计开关**/
+            /** 打开 debug 覆盖率统计开关 **/
             testCoverageEnabled = true
         }
     }
