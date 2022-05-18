@@ -30,7 +30,7 @@ jacoco {
     toolVersion = "0.8.7"
 }
 
-//多个ec文件合成一个, 本地调试用，实际直接执行生成报告即可
+//多个ec文件合成一个, 本地调试用, 请使用 app 下的 jacoco.gradle
 task jacocoMerger(type:JacocoMerge) {
     group = "JacocoReport"
     destinationFile = new File(jacocoAllDir + jacocoAllFileName)
