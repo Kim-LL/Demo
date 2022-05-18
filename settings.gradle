@@ -1,0 +1,5 @@
+rootProject.name = "Demo"
+include ':app'
+include ':login'
+include ':setting'
+include ':override'

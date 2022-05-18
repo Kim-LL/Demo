@@ -1,0 +1,107 @@
+apply plugin: 'jacoco'
+/**
+ * 手动测试代码覆盖率
+ * Useage:
+ *
+ * 1、可以直接编译运行或者安装应用
+ * 2、./gradlew jacocoInit 初始化
+ * 3、开始测试，测试结束后点击生成报告将ec文件pull到本地项目 PROJECT_PATH 路径中，具体命令可查看日志Loge<Pull>
+ * PROJECT_PATH '项目路径/app/build/' + 'outputs/code-coverage/'
+ * 4、./gradlew jacocoTestReport 然后到 /app/build/reports里查看相关报告
+ *
+ */
+
+//Java源码路径
+def coverageSourceDirs = [
+        '../app/src/main/java',
+        '../setting/src/main/java',
+        '../login/src/main/java'
+]
+
+def coverageClassDirs = [
+        '../app/build/intermediates/javac/debug/classes',
+        '../setting/build/intermediates/javac/debug/classes',
+        '../login/build/tmp/kotlin-classes/debug'
+]
+
+//Jacoco 版本
+jacoco {
+    toolVersion = "0.8.2"
+}
+
+
+def jacocoPartsDir = "$buildDir/outputs/jacoco-parts/"
+def jacocoAllDir = "$buildDir/outputs/jacoco-all/"
+def jacocoAllFileName = "all.ec"
+
+
+task jacocoClean() {
+    group = "JacocoReport"
+    File file = new File(jacocoAllDir + jacocoAllFileName)
+    doFirst {
+        if (file.exists()) {
+            file.delete
+        }
+    }
+}
+
+//多个ec文件合成一个
+task jacocoMerger(type:JacocoMerge) {
+    group = "JacocoReport"
+    destinationFile = new File(jacocoAllDir + jacocoAllFileName)
+    executionData = project.files([])
+    doFirst {
+        File jacocoExecDir = new File(jacocoPartsDir)
+
+        if (jacocoExecDir.exists()) {
+            executionData jacocoExecDir.listFiles().findAll { it.name.endsWith(".ec") }
+        }
+    }
+}
+
+//生成报告task
+task jacocoTestReport(type: JacocoReport) {
+    group = "JacocoReport"
+    description = "Generate Jacoco coverage reports after running tests."
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    classDirectories.from = files(files(coverageClassDirs).files.collect{
+        fileTree(
+                dir: it,
+                excludes: ['**/R*.class',
+                           '**/*$InjectAdapter.class',
+                           '**/*$ModuleAdapter.class',
+                           '**/*$ViewInjector*.class'
+                ])
+    })
+    sourceDirectories.from = files(coverageSourceDirs)
+    executionData.from = fileTree(dir: "$buildDir", includes: [
+            "outputs/ACoverages/*.ec"])
+
+    doFirst {
+
+        new File("$buildDir/intermediates/javac/debug/classes/").eachFileRecurse { file ->
+            if (file.name.contains('$$')) {
+                file.renameTo(file.path.replace('$$', '$'))
+            }
+        }
+    }
+}
+
+//初始化Jacoco Task
+task jacocoInit() {
+    group = "JacocoReport"
+    doFirst{
+        File file = new File("$buildDir/outputs/ACoverages/")
+        if (!file.exists()){
+            file.mkdir()
+        }else{
+            file.eachFileRecurse { f ->
+                f.delete()
+            }
+        }
+    }
+}
