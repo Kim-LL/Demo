@@ -62,7 +62,6 @@ task jacocoMerger(type:JacocoMerge) {
 
 
 //以下配置均已配置好，原则上不需要有任何修改即可正常使用
-
 //生成报告task
 task jacocoTestReport(type: JacocoReport) {
     group = "JacocoReport"
