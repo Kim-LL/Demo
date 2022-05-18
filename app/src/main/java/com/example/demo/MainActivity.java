@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initAction(){
+        // 启动 jacoco 服务统计，生成一个 service，在 service 做定时统计
         Intent intent = new Intent(this, StatisticService.class);
         startService(intent);
         PermissionUtils.checkPermission(this);
