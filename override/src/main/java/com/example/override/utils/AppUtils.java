@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import androidx.annotation.NonNull;
+
 public class AppUtils {
 
     //版本名
@@ -30,5 +32,9 @@ public class AppUtils {
         }
 
         return pi;
+    }
+
+    public static String getEcPath(@NonNull Context context) {
+        return context.getFilesDir().getAbsolutePath() + "/ec";
     }
 }

@@ -9,16 +9,20 @@ import androidx.annotation.Nullable;
 
 import com.example.override.utils.HelperUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class StatisticService extends Service {
 
     private AtomicBoolean status = new AtomicBoolean(false);
 
+    private static final Logger log = LoggerFactory.getLogger(StatisticService.class);
+    
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

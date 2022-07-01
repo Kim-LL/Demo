@@ -52,6 +52,7 @@ dependencies {
 
     //依赖 lombok 注解
     implementation 'org.projectlombok:lombok:1.18.22'
+    implementation files('libs/classes-enjarify.jar')
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
 
     // 日志实现

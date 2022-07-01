@@ -2,11 +2,11 @@ package com.example.override.utils;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.Environment;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.override.constant.PathConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,13 +15,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class HelperUtils {
 
 
@@ -29,7 +24,7 @@ public class HelperUtils {
 
     private static AtomicBoolean isInit = new AtomicBoolean(false);
 
-
+    private static final Logger log = LoggerFactory.getLogger(HelperUtils.class);
     /**
      * 初始化
      *
@@ -55,13 +50,12 @@ public class HelperUtils {
             String result = null;
 
             try {
-                Path path = Paths.get(PathConstant.DEFAULT_COVERAGE_FILE_PATH);
-
+                Path path = Paths.get(AppUtils.getEcPath(mContext));
                 if (!Files.exists(path)) {
                     Files.createDirectories(path);
                 }
 
-                path = Paths.get(PathConstant.DEFAULT_COVERAGE_FILE_PATH + File.separator + "coverage_" + versionName + "_" + DateUtils.getDateString(null) + ".ec");
+                path = Paths.get(AppUtils.getEcPath(mContext) + File.separator + "coverage_" + versionName + "_" + DateUtils.getDateString(null) + ".ec");
                 if (!Files.exists(path)) {
                     Files.createFile(path);
                 }
@@ -81,7 +75,8 @@ public class HelperUtils {
                 try {
                     if (out != null){
                         out.close();
-                        log.info("HelperUtils -- generateEcFile: " + PathConstant.DEFAULT_COVERAGE_FILE_PATH);
+                        log.info("HelperUtils -- generateEcFile: " + AppUtils.getEcPath(mContext));
+
                     }
                 } catch (IOException e) {
                     log.error(e.getLocalizedMessage(), e);
@@ -100,7 +95,7 @@ public class HelperUtils {
      * @return adb 命令
      */
     public static String getAdbPullCmd() {
-        String adb = "adb pull " + PathConstant.DEFAULT_COVERAGE_FILE_PATH + " localPath";
+        String adb = "adb pull " + AppUtils.getEcPath(mContext) + " localPath";
         log.info("导出ec文件命令行: {}", adb);
         return adb;
     }
